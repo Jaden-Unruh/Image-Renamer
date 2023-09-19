@@ -418,7 +418,7 @@ class DirectoryFilter implements FilenameFilter {
 }
 
 /**
- * A file filter that only accepts image files - files with an extension in <a href="file:../src/main/resources/ImageExtensions.dat">ImageExtensions</a>
+ * A file filter that only accepts image files - files with an extension in ImageExtensions.dat
  * @author Jaden
  */
 class ImageFileFilter implements FilenameFilter {

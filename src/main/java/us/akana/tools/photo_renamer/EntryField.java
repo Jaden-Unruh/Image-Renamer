@@ -15,6 +15,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
+/**
+ * A Field into which the user can input text, checked against a Regular Expression and containing "ghost" prompt text before the user focuses on it
+ * @author Jaden
+ *
+ */
 @SuppressWarnings("serial")
 public class EntryField extends JTextField implements DocumentListener {
 	
