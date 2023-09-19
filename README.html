@@ -16,7 +16,7 @@
 <ul>
 <li>Select an Input directory: <code>Select...</code>
 <ul>
-<li>Click the <code>Select...</code> button and it will open a file selection prompt. Navigate to the directory that contains all of the photos you wish to rename, as specified in the <a href="#File-Structure">File Structure</a> section.</li>
+<li>Click the <code>Select...</code> button and it will open a file selection prompt. Navigate to the directory that contains all of the photos you wish to rename, as specified in the <a href="/#File-Structure">File Structure</a> section.</li>
 </ul>
 </li>
 <li>Select an Output directory: <code>Select...</code>
@@ -50,7 +50,7 @@
 <blockquote>
 <p>Nothing’s happening when I double click the <code>.JAR</code> file</p>
 </blockquote>
-<p>Ensure you’ve installed Java as specified under <a href="#Setup">Setup</a>. If you believe you have, try checking your java version as specified above.</p>
+<p>Ensure you’ve installed Java as specified under <a href="/#Setup">Setup</a>. If you believe you have, try checking your java version as specified above.</p>
 <hr />
 <blockquote>
 <p><code>Run</code> isn’t doing anything</p>
@@ -60,7 +60,7 @@
 <blockquote>
 <p>Some photos are being skipped</p>
 </blockquote>
-<p>Photos that are not named and within directories as stated under <a href="#File-Structure">File Structure</a> will not be copied. Any that are skipped should be mentioned within the <code>rename-info</code> document after the script is complete.<sup class="footnote-ref"><a href="#fn-2" id="fnref-2" data-footnote-ref>2</a></sup></p>
+<p>Photos that are not named and within directories as stated under <a href="/#File-Structure">File Structure</a> will not be copied. Any that are skipped should be mentioned within the <code>rename-info</code> document after the script is complete.<sup class="footnote-ref"><a href="#fn-2" id="fnref-2" data-footnote-ref>2</a></sup></p>
 <hr />
 <blockquote>
 <p>What’s this <code>rename-info</code> file?</p>
@@ -128,7 +128,7 @@
 <p>If this shows a higher number, things should all work the same. If it shows a lower number, the script might work, but if things go wrong try updating to this version. The same installer from above should do that. <a href="#fnref-1" class="footnote-backref" data-footnote-backref aria-label="Back to content">?</a></p>
 </li>
 <li id="fn-2">
-<p>The only other reason a file would be skipped is if it wasn’t recognized as an image. The script will recognize a file as an image if it has one of the following extensions: .jpg, .jpeg, .jpe, .jif, .jfif, .jfi, .png, .gif, .webp, .tiff, .tif, .psd, .raw, .arw, .cr2, .nrw, .k25, .bmp, .dib, .heif, .heic, .ind, .indd, .indt, .jp2, .j2k, .jpf, .jpx, .jpm, .mj2, .svg, .svgz, .ai, .eps (yes, I just looked up a list of common image file extensions) – note that the file extensions are converted to lowercase before being checked against this list, so capitalization does not matter. The file’s extension will be maintained when it is copied. Any files that do not have an extension listed above will not be copied/renamed and will not be noted in the <code>rename-info</code> file. <a href="#fnref-2" class="footnote-backref" data-footnote-backref aria-label="Back to content">?</a></p>
+<p>The only other reason a file would be skipped is if it wasn’t recognized as an image. The script will recognize a file as an image if it has one of the following extensions: .jpg, .jpeg, .jpe, .jif, .jfif, .jfi, .png, .gif, .webp, .tiff, .tif, .psd, .raw, .arw, .cr2, .nrw, .k25, .bmp, .dib, .heif, .heic, .ind, .indd, .indt, .jp2, .j2k, .jpf, .jpx, .jpm, .mj2, .svg, .svgz, .ai, .eps (yes, I just looked up a list of common image file extensions) – note that the file extensions are converted to lowercase before being checked against this list, so capitalization does not matter. The file’s extension will be maintained when it is copied. Any files that do not have an extension listed above will not be copied/renamed and will not be noted in the <code>rename-info</code> file. This list of acceptable file extensions can be changed without recompiling the project - they are stored in <code>ImageExtensions.dat</code> directly within the <code>.jar</code> - open the <code>.jar</code> with a tool like <a href="https://www.win-rar.com/download.html">WinRAR</a>, edit the file with a text editor like Notepad, then recompress the <code>.jar</code> with WinRAR, and everything should work well. <a href="#fnref-2" class="footnote-backref" data-footnote-backref aria-label="Back to content">?</a></p>
 </li>
 </ol>
 </section>
