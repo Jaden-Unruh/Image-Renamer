@@ -35,7 +35,6 @@ enum InfoText {
 	SELECT_PROMPT, ERROR, DONE, COPYING
 }
 
-//FIXME copies every image twice
 //TODO  lock inputs while running, or ...
 
 public class Main {
@@ -49,6 +48,7 @@ public class Main {
 	static JLabel info = new JLabel();
 
 	static EntryField inputSite, inputLocNum, inputYear;
+	static JButton selectInput, selectOutput;
 
 	static InfoText infoText;
 
@@ -74,9 +74,9 @@ public class Main {
 		case ERROR:
 			return Messages.getString("Main.Info.Error"); //$NON-NLS-1$
 		case DONE:
-			return Messages.getString("Main.Info.Done");
+			return Messages.getString("Main.Info.Done"); //$NON-NLS-1$
 		case COPYING:
-			return Messages.getString("Main.Info.Copying");
+			return Messages.getString("Main.Info.Copying"); //$NON-NLS-1$
 		}
 		return null;
 	}
@@ -89,14 +89,14 @@ public class Main {
 		options.add(new JLabel(Messages.getString("Main.Window.InputPrompt")), //$NON-NLS-1$
 				new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
-		JButton selectInput = new SelectButton(0, true);
+		selectInput = new SelectButton(0, true);
 		options.add(selectInput,
 				new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
 		options.add(new JLabel(Messages.getString("Main.Window.OutputPrompt")), //$NON-NLS-1$
 				new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
-		JButton selectOutput = new SelectButton(1, true);
+		selectOutput = new SelectButton(1, true);
 		options.add(selectOutput,
 				new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
@@ -145,10 +145,12 @@ public class Main {
 						@Override
 						protected Boolean doInBackground() throws Exception {
 							updateInfo(InfoText.COPYING);
+							lockInputs();
 							initInfo(selectedFiles[1]);
 							copyPhotos(selectedFiles[0]);
 							writeToInfo.close();
 							updateInfo(InfoText.DONE);
+							unlockInputs();
 							run.setEnabled(true);
 							return true;
 						}
@@ -192,6 +194,22 @@ public class Main {
 		options.pack();
 		options.setVisible(true);
 	}
+	
+	private static void lockInputs() {
+		inputLocNum.setEditable(false);
+		inputSite.setEditable(false);
+		inputYear.setEditable(false);
+		selectInput.setEnabled(false);
+		selectOutput.setEnabled(false);
+	}
+	
+	private static void unlockInputs() {
+		inputLocNum.setEditable(true);
+		inputSite.setEditable(true);
+		inputYear.setEditable(true);
+		selectInput.setEnabled(true);
+		selectOutput.setEnabled(true);
+	}
 
 	private static void copyPhotos(File directory) throws IOException {
 		if (directory.isDirectory()) {
@@ -203,15 +221,12 @@ public class Main {
 
 			for (File image : images)
 				copyImage(image);
-		} else if (ImageFileFilter.IMAGE_EXTENSIONS_LIST
-				.contains(FilenameUtils.getExtension(directory.getName()).toLowerCase())) {
-			copyImage(directory);
 		}
 	}
 
 	static final Pattern IMAGE_NAME_REGEX = Pattern
-			.compile("(AB\\d{6})\\s+-\\s+(.+?)\\s+-\\s+(.+?)(?:\\s+-\\s+ELEVATIONS)?\\\\");
-	static final Pattern CARDINAL_REGEX = Pattern.compile("[NESW]");
+			.compile("(AB\\d{6})\\s+-\\s+(.+?)\\s+-\\s+(.+?)(?:\\s+-\\s+ELEVATIONS)?\\\\"); //$NON-NLS-1$
+	static final Pattern CARDINAL_REGEX = Pattern.compile("[NESW]"); //$NON-NLS-1$
 
 	private static void copyImage(File image) throws IOException {
 		Matcher match = IMAGE_NAME_REGEX.matcher(image.getAbsolutePath());
@@ -220,16 +235,18 @@ public class Main {
 			String maximo = match.group(1);
 			String buildingNum = match.group(3);
 			String cardinalDir = cardinalMatch.group();
-			boolean isElevations = image.getAbsolutePath().contains("ELEVATIONS");
+			boolean isElevations = image.getAbsolutePath().contains("ELEVATIONS"); //$NON-NLS-1$
 
 			copyFile(image,
-					String.format("%s\\%s_%s_%s_%s_%s Photo - %s_%s", selectedFiles[1].getAbsolutePath(), inputYear.getText(), inputLocNum.getText(),
-							inputSite.getText(), maximo, isElevations ? "Elevations" : "Building", cardinalDir,
-							buildingNum),
+					String.format(Messages.getString("Main.File.OutputFormat"), selectedFiles[1].getAbsolutePath(), //$NON-NLS-1$
+							inputYear.getText(), inputLocNum.getText(), inputSite.getText(), maximo,
+							isElevations ? Messages.getString("Main.File.Elevations") //$NON-NLS-1$
+									: Messages.getString("Main.File.Building"), //$NON-NLS-1$
+							cardinalDir, buildingNum),
 					"." + FilenameUtils.getExtension(image.getName()));
 		} else {
-			writeToInfo
-					.write(String.format("- Image file or its path are not formatted correctly, skipping file: \"%s\"\n",
+			writeToInfo.write(
+					String.format(Messages.getString("Main.File.InfoFormat"), //$NON-NLS-1$
 							image.getAbsolutePath()));
 		}
 
@@ -258,7 +275,7 @@ public class Main {
 		while (outFile.isFile()) {
 			newOutPath = outPath;
 			didCount = true;
-			newOutPath += String.format(" (%s)", count);
+			newOutPath += String.format(" (%s)", count); //$NON-NLS-1$
 			count++;
 			outFile = new File(newOutPath + ext);
 		}
@@ -266,7 +283,7 @@ public class Main {
 		FileUtils.copyFile(file, outFile);
 
 		if (didCount)
-			writeToInfo.write(String.format("- Duplicate file written, something went wrong: %s\n", outPath + ext));
+			writeToInfo.write(String.format(Messages.getString("Main.File.InfoDuplicate"), outPath + ext)); //$NON-NLS-1$
 	}
 }
 
@@ -279,12 +296,11 @@ class DirectoryFilter implements FilenameFilter {
 
 class ImageFileFilter implements FilenameFilter {
 
-	static final String[] IMAGE_EXTENSIONS = { "jpg", "jpeg", "jpe", "jif", "jfif", "jfi", "png", "gif", "webp", "tiff", "tif",
-			"psd", "raw", "arw", "cr2", "nrw", "k25", "bmp", "dib", "heif", "heic", "ind", "indd", "indt", "jp2", "j2k",
-			"jpf", "jpx", "jpm", "mj2", "svg", "svgz", "ai", "eps" };
+	static final String[] IMAGE_EXTENSIONS = Messages.getExtensions();
 	static final List<String> IMAGE_EXTENSIONS_LIST = Arrays.asList(IMAGE_EXTENSIONS);
 
 	public boolean accept(File arg0, String arg1) {
+		System.out.println(Arrays.toString(IMAGE_EXTENSIONS));
 		return IMAGE_EXTENSIONS_LIST.contains(FilenameUtils.getExtension(arg1).toLowerCase());
 	}
 }

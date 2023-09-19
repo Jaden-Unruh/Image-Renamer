@@ -1,5 +1,9 @@
 package us.akana.tools.photo_renamer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -25,5 +29,15 @@ public class Messages {
 		} catch (MissingResourceException e) {
 			return '!' + key + '!';
 		}
+	}
+	
+	public static String[] getExtensions() {
+		try (InputStream in = Messages.class.getResourceAsStream("/ImageExtensions.dat");
+				BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+			return reader.lines().toArray(String[]::new);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
