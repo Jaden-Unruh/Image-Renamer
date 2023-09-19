@@ -31,6 +31,10 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * Gets the image extensions from ImageExtensions.dat file
+	 * @return the extensions
+	 */
 	public static String[] getExtensions() {
 		try (InputStream in = Messages.class.getResourceAsStream("/ImageExtensions.dat");
 				BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {

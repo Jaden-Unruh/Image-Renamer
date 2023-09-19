@@ -17,10 +17,21 @@ import javax.swing.text.JTextComponent;
 
 @SuppressWarnings("serial")
 public class EntryField extends JTextField implements DocumentListener {
-
+	
+	/**
+	 * The regular expression that this input field should match
+	 */
 	Pattern regex;
+	/**
+	 * Whether the text in this field is currently valid (i.e., matching {@link EntryField#regex})
+	 */
 	boolean isValid = false;
-
+	
+	/**
+	 * Constructs an entry field with the specified regular expression and default (ghost) text
+	 * @param regex the regular expression, as a String
+	 * @param defaultText the ghost text
+	 */
 	EntryField(String regex, String defaultText) {
 		super();
 		TextPrompt prompt = new TextPrompt(defaultText, this);
@@ -31,6 +42,9 @@ public class EntryField extends JTextField implements DocumentListener {
 		getDocument().addDocumentListener(this);
 	}
 	
+	/**
+	 * Checks if the text is currently valid, updating {@link EntryField#isValid}
+	 */
 	private void checkText() {
 		String text = this.getText();
 		if (regex.matcher(text).matches()) {
@@ -41,24 +55,42 @@ public class EntryField extends JTextField implements DocumentListener {
 			isValid = false;
 		}
 	}
-
+	
+	@Override
 	public void changedUpdate(DocumentEvent arg0) {}
 
+	@Override
 	public void insertUpdate(DocumentEvent arg0) {
 		checkText();
 	}
 
+	@Override
 	public void removeUpdate(DocumentEvent arg0) {
 		checkText();
 	}
 }
 
+/**
+ * "Ghost text" for an {@link EntryField} - disappears when the user is focusing on the text field
+ * @author Jaden
+ */
 @SuppressWarnings("serial")
 class TextPrompt extends JLabel implements FocusListener, DocumentListener {
 
+	/**
+	 * The EntryField that this is on
+	 */
 	private JTextComponent component;
+	/**
+	 * The Document of {@link TextPrompt#component}
+	 */
 	private Document document;
 
+	/**
+	 * Constructs a TextPrompt with the given text on the given EntryField
+	 * @param text the text to show
+	 * @param component the EntryField to be on
+	 */
 	public TextPrompt(String text, JTextComponent component) {
 		this.component = component;
 		document = component.getDocument();
@@ -78,8 +110,7 @@ class TextPrompt extends JLabel implements FocusListener, DocumentListener {
 	}
 
 	/**
-	 * Convenience method to change the alpha value of the current foreground Color
-	 * to the specifice value.
+	 * Sets the alpha (transparency) of the TextPrompt
 	 *
 	 * @param alpha value in the range of 0 - 255.
 	 */
@@ -96,8 +127,7 @@ class TextPrompt extends JLabel implements FocusListener, DocumentListener {
 	}
 
 	/**
-	 * Check whether the prompt should be visible or not. The visibility will change
-	 * on updates to the Document and on focus changes.
+	 * Check whether the prompt should be visible or not
 	 */
 	private void checkForPrompt() {
 		if (document.getLength() > 0) {

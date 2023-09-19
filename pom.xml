@@ -2,8 +2,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>us.akana.tools</groupId>
   <artifactId>photo-renamer</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>Photo Renaming Tool</name>
+  <url>https://github.com/Jaden-Unruh/Image-Renamer</url>
+  
+  <developers>
+  	<developer>
+  		<name>Jaden Unruh</name>
+  		<email>Jaden-Unruh@akana.us</email>
+  		<organization>Akana</organization>
+  		<organizationUrl>https://akana.us</organizationUrl>
+  	</developer>
+  </developers>
   
   <build>
   	<pluginManagement>
