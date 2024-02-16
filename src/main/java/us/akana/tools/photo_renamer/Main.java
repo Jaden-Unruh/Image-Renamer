@@ -337,7 +337,8 @@ public class Main {
 		Matcher cardinalMatch = CARDINAL_REGEX.matcher(image.getName());
 		if (match.find() && cardinalMatch.find()) {
 			String maximo = match.group(1);
-			String buildingNum = match.group(3);
+			String name = match.group(2);
+			// String buildingNum = match.group(3);
 			String cardinalDir = cardinalMatch.group();
 			boolean isElevations = image.getAbsolutePath().contains("ELEVATIONS"); //$NON-NLS-1$
 
@@ -346,7 +347,7 @@ public class Main {
 							inputYear.getText(), inputLocNum.getText(), inputSite.getText(), maximo,
 							isElevations ? Messages.getString("Main.File.Elevations") //$NON-NLS-1$
 									: Messages.getString("Main.File.Building"), //$NON-NLS-1$
-							cardinalDir, buildingNum),
+							cardinalDir, name),
 					"." + FilenameUtils.getExtension(image.getName())); //$NON-NLS-1$
 		} else {
 			writeToInfo.write(String.format(Messages.getString("Main.File.InfoFormat"), //$NON-NLS-1$
