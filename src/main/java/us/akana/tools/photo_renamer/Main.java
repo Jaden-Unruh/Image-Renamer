@@ -64,6 +64,12 @@ public class Main {
 	 * Regular expression for a year: '20' followed by two digits
 	 */
 	private static final String YEAR_REGEX = "^20\\d{2}$"; //$NON-NLS-1$
+	/**
+	 * Regular expression for a site name: any string that does not contain any of
+	 * the following characters: <>:"\/|?* as they are invalid for windows file
+	 * names
+	 */
+	private static final String SITE_NAME_REGEX = "^[^<>:\"\\\\\\/|?\\*]+$";
 
 	/**
 	 * Main program window
@@ -86,7 +92,7 @@ public class Main {
 	/**
 	 * User inputs for site, location number, and year
 	 */
-	static EntryField inputSite, inputLocNum, inputYear;
+	static EntryField inputSite, inputLocNum, inputYear, inputSiteName;
 	/**
 	 * Buttons to select input and output directories; open a file selection window
 	 * upon click
@@ -191,17 +197,24 @@ public class Main {
 		inputYear = new EntryField(YEAR_REGEX, Messages.getString("Main.Window.YearDefault")); //$NON-NLS-1$
 		options.add(inputYear,
 				new GridBagConstraints(1, 4, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+		
+		options.add(new JLabel(Messages.getString("Main.Window.SiteNamePrompt")),
+				new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+		
+		inputSiteName = new EntryField(SITE_NAME_REGEX, Messages.getString("Main.Window.SiteNameDefault"));
+		options.add(inputSiteName,
+				new GridBagConstraints(1, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
 		JButton cancel = new JButton(Messages.getString("Main.Window.Close")); //$NON-NLS-1$
 		options.add(cancel,
-				new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+				new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
 		final JButton run = new JButton(Messages.getString("Main.Window.Open")); //$NON-NLS-1$
 		options.add(run,
-				new GridBagConstraints(1, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+				new GridBagConstraints(1, 6, 1, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
 		options.add(info,
-				new GridBagConstraints(0, 6, 2, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
+				new GridBagConstraints(0, 7, 2, 1, 0, 0, GridBagConstraints.CENTER, 0, new Insets(0, 0, 0, 0), 0, 0));
 
 		cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -281,7 +294,7 @@ public class Main {
 		selectInput.setEnabled(false);
 		selectOutput.setEnabled(false);
 	}
-	
+
 	/**
 	 * Re-enables user inputs after the program is done running
 	 * 
@@ -294,9 +307,10 @@ public class Main {
 		selectInput.setEnabled(true);
 		selectOutput.setEnabled(true);
 	}
-	
+
 	/**
-	 * Copies photos from the given directory to the output directory ({@link Main#selectedFiles}[1])
+	 * Copies photos from the given directory to the output directory
+	 * ({@link Main#selectedFiles}[1])
 	 * 
 	 * Recursive, will call itself on subdirectories
 	 * 
@@ -317,7 +331,8 @@ public class Main {
 	}
 
 	/**
-	 * Regular expression for the information that should be within the path of an image file: 'AB' 6 digits - text - text (- ELEVATIONS)
+	 * Regular expression for the information that should be within the path of an
+	 * image file: 'AB' 6 digits - text - text (- ELEVATIONS)
 	 */
 	static final Pattern IMAGE_NAME_REGEX = Pattern
 			.compile("(AB\\d{6})\\s+-\\s+(.+?)\\s+-\\s+(.+?)(?:\\s+-\\s+ELEVATIONS)?\\\\"); //$NON-NLS-1$
@@ -327,7 +342,9 @@ public class Main {
 	static final Pattern CARDINAL_REGEX = Pattern.compile("[NESW]"); //$NON-NLS-1$
 
 	/**
-	 * Copies the given image to the output directory ({@link Main#selectedFiles}[1]), gathering all the relevant information for the new file name
+	 * Copies the given image to the output directory
+	 * ({@link Main#selectedFiles}[1]), gathering all the relevant information for
+	 * the new file name
 	 * 
 	 * @param image the image File to copy
 	 * @throws IOException if there's an error copying the image
@@ -337,17 +354,17 @@ public class Main {
 		Matcher cardinalMatch = CARDINAL_REGEX.matcher(image.getName());
 		if (match.find() && cardinalMatch.find()) {
 			String maximo = match.group(1);
-			String name = match.group(2);
+			// String buildingName = match.group(2);
 			// String buildingNum = match.group(3);
 			String cardinalDir = cardinalMatch.group();
 			boolean isElevations = image.getAbsolutePath().contains("ELEVATIONS"); //$NON-NLS-1$
 
 			copyFile(image,
 					String.format(Messages.getString("Main.File.OutputFormat"), selectedFiles[1].getAbsolutePath(), //$NON-NLS-1$
-							inputYear.getText(), inputLocNum.getText(), inputSite.getText(), maximo,
+							inputYear.getText(), inputSite.getText(), inputLocNum.getText(), maximo,
 							isElevations ? Messages.getString("Main.File.Elevations") //$NON-NLS-1$
 									: Messages.getString("Main.File.Building"), //$NON-NLS-1$
-							cardinalDir, name),
+							cardinalDir, inputSiteName.getText()),
 					"." + FilenameUtils.getExtension(image.getName())); //$NON-NLS-1$
 		} else {
 			writeToInfo.write(String.format(Messages.getString("Main.File.InfoFormat"), //$NON-NLS-1$
@@ -355,18 +372,20 @@ public class Main {
 		}
 
 	}
-	
+
 	/**
 	 * Checks if the user has selected files and if the inputs are valid
+	 * 
 	 * @return true if the selections are correct
 	 */
 	private static boolean checkCorrectSelections() {
 		return inputSite.isValid && inputLocNum.isValid && inputYear.isValid && selectedFiles[0].isDirectory()
 				&& selectedFiles[1].isDirectory();
 	}
-	
+
 	/**
 	 * Updates the text in {@link Main#info} to a new value
+	 * 
 	 * @param text the value to update to
 	 */
 	static void updateInfo(InfoText text) {
@@ -374,13 +393,14 @@ public class Main {
 		info.setText(getInfoText());
 		options.pack();
 	}
-	
+
 	/**
-	 * Copies a file - if the specified output path already exists, adds a number to the end
+	 * Copies a file - if the specified output path already exists, adds a number to
+	 * the end
 	 * 
-	 * @param file the file to copy
+	 * @param file    the file to copy
 	 * @param outPath the path to copy to
-	 * @param ext the file extension
+	 * @param ext     the file extension
 	 * @throws IOException if there's an error copying the file
 	 */
 	static void copyFile(File file, String outPath, String ext) throws IOException {
@@ -409,6 +429,7 @@ public class Main {
 
 /**
  * A file filter that only accepts directories
+ * 
  * @author Jaden
  */
 class DirectoryFilter implements FilenameFilter {
@@ -419,7 +440,9 @@ class DirectoryFilter implements FilenameFilter {
 }
 
 /**
- * A file filter that only accepts image files - files with an extension in ImageExtensions.dat
+ * A file filter that only accepts image files - files with an extension in
+ * ImageExtensions.dat
+ * 
  * @author Jaden
  */
 class ImageFileFilter implements FilenameFilter {
