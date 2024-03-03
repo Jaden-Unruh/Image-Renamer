@@ -290,6 +290,7 @@ public class Main {
 	private static void lockInputs() {
 		inputLocNum.setEditable(false);
 		inputSite.setEditable(false);
+		inputSiteName.setEditable(false);
 		inputYear.setEditable(false);
 		selectInput.setEnabled(false);
 		selectOutput.setEnabled(false);
@@ -303,6 +304,7 @@ public class Main {
 	private static void unlockInputs() {
 		inputLocNum.setEditable(true);
 		inputSite.setEditable(true);
+		inputSiteName.setEditable(true);
 		inputYear.setEditable(true);
 		selectInput.setEnabled(true);
 		selectOutput.setEnabled(true);
@@ -379,7 +381,7 @@ public class Main {
 	 * @return true if the selections are correct
 	 */
 	private static boolean checkCorrectSelections() {
-		return inputSite.isValid && inputLocNum.isValid && inputYear.isValid && selectedFiles[0].isDirectory()
+		return inputSite.isValid && inputLocNum.isValid && inputYear.isValid && inputSiteName.isValid && selectedFiles[0].isDirectory()
 				&& selectedFiles[1].isDirectory();
 	}
 
